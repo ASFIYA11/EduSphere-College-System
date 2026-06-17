@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduSphere | Unified Enterprise Node</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -20,26 +22,13 @@
     <main class="container">
         <section id="auth-section" class="card">
             <div class="auth-tabs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span id="tab-login" class="auth-tab active" style="font-weight: 700; cursor: pointer; color: var(--primary);">🔐 Session Login</span>
-                <span id="tab-register" class="auth-tab" style="font-weight: 700; cursor: pointer; color: var(--text-muted);">📝 Create Account</span>
+                <span id="tab-login" class="auth-tab active" style="font-weight: 700; cursor: pointer; color: var(--primary);">🔐 Session Authentication Gate</span>
             </div>
 
             <form id="login-form">
-                <input type="text" id="username" placeholder="User Identifier Token Account Profile" required>
+                <input type="text" id="username" placeholder="User ID / Alphanumeric Profile Token" required>
                 <input type="password" id="password" placeholder="Passphrase Matrix Key" required>
                 <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Authenticate Console</button>
-            </form>
-
-            <form id="register-form" style="display: none;">
-                <input type="text" id="reg-username" placeholder="Choose Unique Username (e.g. STU105)" required>
-                <input type="password" id="reg-password" placeholder="Create Strong Security Password" required>
-                
-                <select id="reg-role" style="width: 100%; padding: 0.85rem 1.2rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); outline: none; cursor: pointer;">
-                    <option value="student">👨‍🎓 Student Account</option>
-                    <option value="faculty">👩‍🏫 Faculty Account</option>
-                </select>
-                
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Register New Credentials</button>
             </form>
 
             <p id="auth-status-msg" style="margin-top: 1rem; text-align: center; font-weight: 500;"></p>
@@ -49,17 +38,19 @@
 
         <section id="materials-section" class="card">
             <h2>📚 Enterprise Resource Repositories</h2>
-            <ul id="materials-list" style="margin-top: 1rem; padding-left: 0.5rem;">
-                <li><a href="/static/materials/la_notes.txt" download target="_blank">📄 Linear Algebra & Calculus Complete Notes (LA & C)</a></li>
-                <li><a href="/static/materials/ds_notes.txt" download target="_blank">📄 Data Structures Operations Framework Documentation</a></li>
-                <li><a href="/static/materials/sys_notes.txt" download target="_blank">📄 Core Systems Architecture Reference Blueprint</a></li>
+            <ul id="materials-list" style="margin-top: 1rem; padding-left: 0.5rem; list-style: none;">
+                <li style="margin-bottom: 12px;">
+                    <a href="/static/materials/ds_notes.txt" download="Data_Structures_Notes.txt" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 10px 20px; border-radius: 8px; color: white;">
+                        📥 Download Data Structures Framework Documentation
+                    </a>
+                </li>
             </ul>
         </section>
 
         <section id="ai-section" class="card">
             <h2>🤖 Dynamic Predictive AI Cluster Core</h2>
             <div id="chat-box" class="chat-window">
-                <div class="chat-msg ai">Greetings! I am the campus engine execution model tracking context. Query me regarding computational mechanics or instruction data frames like <em>"search la and c pdf"</em>.</div>
+                <div class="chat-msg ai">Greetings! I am the campus engine execution model tracking context. Query me regarding computational mechanics or instruction data frames like <em>"search data structures"</em>.</div>
             </div>
             <div class="chat-input-container">
                 <input type="text" id="ai-query" placeholder="Submit instructional query parameters to operational core...">
