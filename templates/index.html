@@ -1,70 +1,89 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduSphere Core | Unified Enterprise Platform</title>
+    <title>EduSphere Systems</title>
     
     <link rel="icon" type="image/png" href="/static/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        :root[data-theme="dark"] {
-            --bg-main: #0f172a;
-            --card-glass: rgba(30, 41, 59, 0.7);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border-ui: rgba(255, 255, 255, 0.08);
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-        }
-        :root[data-theme="light"] {
-            --bg-main: #f1f5f9;
-            --card-glass: rgba(255, 255, 255, 0.9);
-            --text-main: #0f172a;
-            --text-sub: #475569;
-            --border-ui: rgba(15, 23, 42, 0.08);
-            --accent: #0284c7;
-            --accent-hover: #0369a1;
+        /* 🎨 ORIGINAL DEEP BLUE GLASSMORPHIC THEME COLORS FROM YESTERDAY */
+        body {
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-main); color: var(--text-main); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; }
-        
-        .theme-switch { position: absolute; top: 20px; right: 20px; background: var(--card-glass); border: 1px solid var(--border-ui); padding: 10px 15px; border-radius: 30px; cursor: pointer; font-weight: bold; color: var(--accent); transition: transform 0.2s; }
-        .theme-switch:hover { transform: scale(1.05); }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 24px;
+            padding: 45px;
+            width: 380px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
 
-        .auth-card { background: var(--card-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 45px; border-radius: 20px; border: 1px solid var(--border-ui); width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .dashboard-viewport { display: none; width: 92%; max-width: 1200px; background: var(--card-glass); border-radius: 24px; border: 1px solid var(--border-ui); padding: 35px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); margin-top: 40px; }
-        
-        h2, h3 { margin-top: 0; color: var(--accent); letter-spacing: -0.5px; }
-        .form-group { margin-bottom: 22px; }
-        label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; }
-        input, select { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border-ui); background: rgba(0,0,0,0.1); color: var(--text-main); box-sizing: border-box; font-size: 14px; }
-        
-        button { width: 100%; padding: 14px; border-radius: 10px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; font-size: 15px; transition: all 0.2s ease; }
-        button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .dashboard-view {
+            display: none;
+            width: 90%;
+            max-width: 1100px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
 
-        .metrics-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 25px; }
-        .stat-card { background: rgba(0,0,0,0.15); padding: 20px; border-radius: 14px; border: 1px solid var(--border-ui); text-align: center; }
-        .stat-val { font-size: 36px; font-weight: bold; color: var(--accent); margin: 10px 0; }
+        h2, h3 { color: #06b6d4; margin-top: 0; font-weight: 600; letter-spacing: -0.5px; }
+        .form-group { margin-bottom: 24px; }
+        label { display: block; margin-bottom: 10px; font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
         
-        .chat-console { background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid var(--border-ui); margin-top: 30px; display: flex; flex-direction: column; height: 350px; }
-        .chat-stream { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg-bubble { max-width: 75%; padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.5; }
-        .msg-user { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg-ai { background: rgba(255,255,255,0.08); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border-ui); }
-        .chat-inputs { display: flex; gap: 10px; padding: 15px; border-top: 1px solid var(--border-ui); }
+        input, select {
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.6); color: white; box-sizing: border-box; font-size: 15px;
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); }
+
+        button {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            color: white; font-weight: 600; font-size: 15px; cursor: pointer;
+            transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+        button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4); }
+
+        /* 📊 METRICS & PROGRESS TRACK BARS */
+        .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-top: 30px; }
+        .metric-widget { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 18px; text-align: center; }
+        .metric-num { font-size: 42px; font-weight: 700; color: #06b6d4; margin: 10px 0; text-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+
+        /* 💬 ORIGINAL INTERACTIVE CHAT ENGINE */
+        .chat-frame { background: rgba(15, 23, 42, 0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); margin-top: 35px; display: flex; flex-direction: column; height: 380px; }
+        .chat-logs { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+        .bubble { max-width: 75%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
+        .bubble-user { background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bubble-ai { background: rgba(255, 255, 255, 0.06); color: #e2e8f0; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid rgba(255,255,255,0.05); }
+        .chat-inputs { display: flex; gap: 12px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
-<button class="theme-switch" id="themeToggler">🌓 TOGGLE SYSTEM THEME</button>
-
-<div class="auth-card" id="authPortal">
-    <h2>EduSphere Core</h2>
+<div class="glass-panel" id="authPortal">
+    <h2>EduSphere Login</h2>
     <form id="authForm">
         <div class="form-group">
-            <label>Matrix System Role Dropdown</label>
+            <label>Matrix System Role</label>
             <select id="role">
                 <option value="student">Student Portal Node</option>
                 <option value="faculty">Faculty Administrative Node</option>
@@ -72,52 +91,46 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Identity Custom ID / Username</label>
-            <input type="text" id="username" placeholder="Type any new identifier to auto-register..." required>
+            <label>User Alphanumeric ID</label>
+            <input type="text" id="username" placeholder="Enter custom credentials or admin..." required>
         </div>
         <div class="form-group">
-            <label>Security Keyphrase (Password)</label>
+            <label>Security Access Token</label>
             <input type="password" id="password" placeholder="••••••••" required>
         </div>
-        <button type="submit">Initialize Authentication Handshake</button>
+        <button type="submit">Verify Identity</button>
     </form>
 </div>
 
-<div class="dashboard-viewport" id="masterDashboard">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-ui); padding-bottom: 20px;">
-        <h2 id="dashHeader" style="margin: 0;">Cluster Workspace Controls</h2>
-        <button onclick="window.location.reload()" style="width: auto; padding: 10px 25px; background: #ef4444; margin: 0;">Terminate Token Session</button>
+<div class="dashboard-view" id="masterDashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 20px;">
+        <h2 id="dashHeader" style="margin: 0;">System Dashboard</h2>
+        <button onclick="window.location.reload()" style="width: auto; padding: 10px 25px; background: #ef4444; margin: 0; box-shadow: none;">Disconnect Session</button>
     </div>
 
-    <div class="metrics-layout" id="metricsDisplay"></div>
+    <div class="metrics-row" id="metricsDisplay"></div>
 
-    <div style="margin-top: 30px; background: rgba(0,0,0,0.1); padding: 20px; border-radius: 14px; border: 1px solid var(--border-ui);">
-        <h3>📚 Shared Educational Resources Node</h3>
-        <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 0;">
-            • Ask the Generative AI Bot below about **"explain bubble sort"** or **"ds notes"** to trigger automated local workspace outputs.
+    <div style="margin-top: 35px; background: rgba(30,41,59,0.2); padding: 25px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05);">
+        <h3>📚 Shared Courseware Library Assets</h3>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0; line-height: 1.5;">
+            • Core Workspace Reference maps active at `/static/materials/ds_notes.txt`. <br>
+            • Query the interactive professor agent down below for **"explain bubble sort"** or **"ds notes"** to trigger live processing context blocks.
         </p>
     </div>
 
-    <h3 style="margin-top: 35px; margin-bottom: -20px;">🤖 EduSphere Intelligent GenAI Agent</h3>
-    <div class="chat-console">
-        <div class="chat-stream" id="chatWindow">
-            <div class="msg-bubble msg-ai">Greetings! The system architecture session is initialized. Query my cognitive matrix layers for structural educational solutions.</div>
+    <h3 style="margin-top: 40px; margin-bottom: -15px;">🤖 Campus Cognitive Assistant</h3>
+    <div class="chat-frame">
+        <div class="chat-logs" id="chatWindow">
+            <div class="bubble bubble-ai">Session handshake established. Type any system analytics query parameters to begin compilation.</div>
         </div>
         <div class="chat-inputs">
-            <input type="text" id="chatInput" placeholder="Input analytical question keyword parameter sequence...">
-            <button id="submitChat" style="width: auto; padding: 0 25px; margin: 0;">Execute Stream</button>
+            <input type="text" id="chatInput" placeholder="Ask anything about grades, schedules, or course concepts...">
+            <button id="submitChat" style="width: auto; padding: 0 30px; margin: 0;">Send</button>
         </div>
     </div>
 </div>
 
 <script>
-const themeToggler = document.getElementById('themeToggler');
-themeToggler.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', targetTheme);
-});
-
 document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const role = document.getElementById('role').value;
@@ -133,10 +146,10 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
         const data = await res.json();
 
         if (res.ok) {
-            Swal.fire('Session Tokens Verified!', `Welcome to EduSphere Network Core, ${data.user_id}!`, 'success').then(async () => {
+            Swal.fire('Authentication Successful', `Access granted to cluster node.`, 'success').then(async () => {
                 document.getElementById('authPortal').style.display = 'none';
                 document.getElementById('masterDashboard').style.display = 'block';
-                document.getElementById('dashHeader').innerText = `EduSphere System | Context: ${data.role.toUpperCase()}`;
+                document.getElementById('dashHeader').innerText = `EduSphere | Operational Mode: ${data.role.toUpperCase()}`;
                 
                 const dataRes = await fetch('/api/dashboard/data');
                 const telemetry = await dataRes.json();
@@ -145,36 +158,36 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
                 
                 if (telemetry.role === 'student') {
                     grid.innerHTML = `
-                        <div class="stat-card"><h3>Attendance Track</h3><div class="stat-val">${telemetry.profile.attendance_pct}%</div><p style="color: #4ade80; font-size:12px;">✔️ Target Range Threshold Cleared</p></div>
-                        <div class="stat-card"><h3>Active Backlogs</h3><div class="stat-val">${telemetry.profile.backlogs}</div><p style="color: var(--text-sub); font-size:12px;">Stable Cluster Metrics</p></div>
-                        <div class="stat-card"><h3>Calculated Ingestion Score</h3><div class="stat-val">90%</div><p style="color: var(--accent); font-size:12px;">Core Technical Marks</p></div>
+                        <div class="metric-widget"><h3>Attendance Metric</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #4ade80; font-size:13px; margin:0;">Target Threshold Secured</p></div>
+                        <div class="metric-widget"><h3>Pending Backlogs</h3><div class="metric-num">${telemetry.profile.backlogs}</div><p style="color: #94a3b8; font-size:13px; margin:0;">Records Stable</p></div>
+                        <div class="metric-widget"><h3>Calculated Grade</h3><div class="metric-num">A+</div><p style="color: #06b6d4; font-size:13px; margin:0;">Top Tier Percentile</p></div>
                     `;
                 } else if (telemetry.role === 'faculty') {
                     grid.innerHTML = `
-                        <div class="stat-card"><h3>Professor Resource</h3><div class="stat-val">${telemetry.profile.attendance_pct}%</div><p style="color: var(--accent); font-size:12px;">Faculty Operational Score</p></div>
-                        <div class="stat-card"><h3>Allocated Budget Salary</h3><div class="stat-val">₹${telemetry.profile.salary}</div><p style="color: #4ade80; font-size:12px;">Authorized Account State</p></div>
+                        <div class="metric-widget"><h3>Resource Score</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #06b6d4; font-size:13px; margin:0;">Active Instructor Metrics</p></div>
+                        <div class="metric-widget"><h3>Disbursed Remittance</h3><div class="metric-num">₹${telemetry.profile.salary}</div><p style="color: #4ade80; font-size:13px; margin:0;">Payroll Active</p></div>
                     `;
                 } else if (telemetry.role === 'admin') {
                     grid.innerHTML = `
-                        <div class="stat-card"><h3>Active Cloud Sessions</h3><div class="stat-val">${telemetry.metrics.total_connections}</div><p style="color: #4ade80; font-size:12px;">Dynamic Registered Profiles Count</p></div>
-                        <div class="stat-card"><h3>Cluster Engine Engine</h3><div class="stat-val" style="font-size:20px; margin: 18px 0;">SQLITE IN-MEMORY ACTIVE</div><p style="color: var(--accent); font-size:12px;">High Availability Active Edge Mode</p></div>
+                        <div class="metric-widget"><h3>Active Cloud Profiles</h3><div class="metric-num">${telemetry.metrics.total_users}</div><p style="color: #4ade80; font-size:13px; margin:0;">Live Global Logins Tracked</p></div>
+                        <div class="metric-widget"><h3>Database Status</h3><div class="metric-num" style="font-size:24px; margin:22px 0;">SQLITE ACTIVE</div><p style="color: #06b6d4; font-size:13px; margin:0;">Zero Latency Cache Engine</p></div>
                     `;
                 }
             });
         } else {
-            Swal.fire('Verification Denied', data.message, 'error');
+            Swal.fire('Access Denied', data.message, 'error');
         }
     } catch (err) {
-        Swal.fire('Telemetry Interface Drop', 'Could not sync connection state hooks.', 'warning');
+        Swal.fire('Link Intercept Drop', 'Could not fetch database records.', 'warning');
     }
 });
 
 const appendMessage = (text, sender) => {
     const stream = document.getElementById('chatWindow');
-    const bubble = document.createElement('div');
-    bubble.className = `msg-bubble msg-${sender}`;
-    bubble.innerText = text;
-    stream.appendChild(bubble);
+    const b = document.createElement('div');
+    b.className = `bubble bubble-${sender}`;
+    b.innerText = text;
+    stream.appendChild(b);
     stream.scrollTop = stream.scrollHeight;
 };
 
@@ -186,8 +199,8 @@ const triggerAiQuery = async () => {
     appendMessage(prompt, 'user');
     input.value = '';
 
-    appendMessage('AI agent indexing semantic embeddings vector matrices...', 'ai');
-    const placeholderBubble = document.getElementById('chatWindow').lastChild;
+    appendMessage('Processing context queries across LLM mesh arrays...', 'ai');
+    const placeholder = document.getElementById('chatWindow').lastChild;
 
     try {
         const res = await fetch('/api/ai-assistant', {
@@ -196,9 +209,9 @@ const triggerAiQuery = async () => {
             body: JSON.stringify({ prompt })
         });
         const data = await res.json();
-        placeholderBubble.innerText = data.response;
+        placeholder.innerText = data.response;
     } catch (err) {
-        placeholderBubble.innerText = "Exception Error: Failed transaction communication sequence.";
+        placeholder.innerText = "Error completing response tunnel connection.";
     }
 };
 
