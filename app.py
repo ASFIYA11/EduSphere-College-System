@@ -1,6 +1,6 @@
 import os
 import sqlite3
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, Response
 from flask_cors import CORS
 from dotenv import load_dotenv
 from google import genai
@@ -36,6 +36,29 @@ ai_client = genai.Client(api_key=os.getenv('GEMINI_API_KEY', 'MOCK_KEY'))
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/static/favicon.png')
+def dynamic_favicon():
+    """
+    Dynamic Vector Asset Factory Layer.
+    Generates a high-resolution, production-grade glowing enterprise college shield 
+    icon on the fly so the app does not depend on a physical static PNG file on GitHub.
+    """
+    svg_icon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+        <defs>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" />
+                <stop offset="100%" stop-color="#0284c7" />
+            </linearGradient>
+        </defs>
+        <path d="M64,8 L112,24 L112,64 C112,96 88,116 64,122 C40,116 16,96 16,64 L16,24 Z" fill="url(#skyGrad)" />
+        <path d="M64,16 L100,28 L100,64 C100,90 80,107 64,112 C48,107 28,90 28,64 L28,28 Z" fill="#0f172a" />
+        <polygon points="64,36 92,48 64,60 36,48" fill="#38bdf8" />
+        <polygon points="48,54 48,72 64,80 80,72 80,54 64,62" fill="#38bdf8" />
+        <rect x="90" y="48" width="2" height="20" fill="#38bdf8" />
+        <circle cx="91" cy="68" r="3" fill="#38bdf8" />
+    </svg>"""
+    return Response(svg_icon, mimetype='image/svg+xml')
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
@@ -127,7 +150,7 @@ def ai_assistant():
         except Exception as err:
             print(f"AI Stream Intercept Exception: {err}")
 
-    return jsonify({"response": f"📡 **EduSphere Edge Sync Echo Activated:** The AI engine received your query: '{user_prompt}'. To configure real-time streaming LLM outputs, inject your functional Google Gemini token value inside the environment settings block."})
+    return jsonify({"response": f"📡 **EduSphere Edge Sync Echo Activated:** The AI engine received your query: '{user_prompt}'."})
 
 @app.route('/logout')
 def logout():
