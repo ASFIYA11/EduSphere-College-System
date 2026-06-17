@@ -3,158 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduSphere Core | Enterprise Portal</title>
+    <title>EduSphere Core Engine</title>
     
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
-        :root {
-            --bg-slate-900: #0f172a;
-            --card-glass: rgba(30, 41, 59, 0.7);
-            --border-glow: rgba(56, 189, 248, 0.2);
-            --sky-primary: #0284c7;
-            --sky-hover: #0369a1;
-        }
-
-        body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            background: var(--bg-slate-900); 
-            color: #f8fafc; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .login-container {
-            background: var(--card-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 45px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            width: 380px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .login-container:hover {
-            border-color: var(--border-glow);
-            box-shadow: 0 25px 50px -6px rgba(56, 189, 248, 0.15);
-        }
-
-        h2 { 
-            text-align: center; 
-            margin-top: 0;
-            margin-bottom: 28px; 
-            color: #38bdf8; 
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .form-group { 
-            margin-bottom: 24px; 
-        }
-
-        label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-size: 13px; 
-            font-weight: 500;
-            color: #94a3b8; 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input, select { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 10px; 
-            border: 1px solid #334155; 
-            background: #1e293b; 
-            color: #ffffff; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            transition: all 0.2s ease;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-            background: #0f172a;
-        }
-
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 10px; 
-            border: none; 
-            background: var(--sky-primary); 
-            color: #ffffff; 
-            font-weight: 600; 
-            font-size: 16px; 
-            cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);
-        }
-
-        button:hover { 
-            background: var(--sky-hover); 
-            transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); width: 380px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .dashboard-container { display: none; width: 90%; max-width: 1000px; background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { text-align: center; margin-top: 0; color: #38bdf8; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; color: #94a3b8; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #0284c7; color: white; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 10px; }
+        button:hover { background: #0369a1; }
+        .ai-box { margin-top: 25px; padding: 15px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; }
+        #aiResponse { font-size: 14px; color: #cbd5e1; white-space: pre-line; margin-top: 10px; background: #1e293b; padding: 10px; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>EduSphere Login</h2>
+<div class="glass-card" id="loginPortal">
+    <h2>EduSphere Portal</h2>
     <form id="loginForm">
         <div class="form-group">
-            <label>Select Matrix System Role</label>
-            <select id="role" required>
-                <option value="student">Student Portal Access</option>
-                <option value="faculty">Faculty Management Node</option>
+            <label>Matrix System Role Selector</label>
+            <select id="role">
+                <option value="student">Student Terminal</option>
+                <option value="faculty">Faculty Terminal</option>
                 <option value="admin">System Administration Core</option>
             </select>
         </div>
-        
         <div class="form-group">
-            <label>Identity Username / ID</label>
-            <input type="text" id="username" placeholder="Enter identifier..." autocomplete="username" required>
+            <label>Account Identifier</label>
+            <input type="text" id="username" placeholder="Enter custom or default profile username..." required>
         </div>
-        
         <div class="form-group">
-            <label>Security Keyphrase (Password)</label>
-            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            <label>Security Access Code</label>
+            <input type="password" id="password" placeholder="••••••••" required>
         </div>
-        
-        <button type="submit">Initialize Authentication</button>
+        <button type="submit">Authenticate Session</button>
     </form>
+</div>
+
+<div class="dashboard-container" id="systemDashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 15px;">
+        <h2 id="dashTitle" style="margin: 0;">Cluster Control Panel</h2>
+        <button onclick="window.location.reload()" style="width: auto; padding: 8px 15px; margin: 0; background: #ef4444;">Terminate Session</button>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <h3>Active Session Operations Status</h3>
+        <p id="profileData" style="background: #0f172a; padding: 15px; border-radius: 8px; color: #a7f3d0; font-family: monospace;"></p>
+    </div>
+
+    <div class="ai-box">
+        <h3>EduSphere GenAI Assistant</h3>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="aiPrompt" placeholder="Query the campus system orchestration layer (e.g., explain bubble sort)..." style="flex: 1;">
+            <button id="sendAiBtn" style="width: auto; margin: 0; padding: 0 20px;">Execute</button>
+        </div>
+        <div id="aiResponse">The AI professor is standing by...</div>
+    </div>
 </div>
 
 <script>
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
     const role = document.getElementById('role').value;
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
-
-    // Trigger visual interface parsing lock states
-    const submitBtn = e.target.querySelector('button');
-    submitBtn.innerText = "Processing Security Handshake...";
-    submitBtn.style.opacity = "0.7";
-    submitBtn.disabled = true;
 
     try {
         const response = await fetch('/api/login', {
@@ -162,64 +81,41 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ role, username, password })
         });
-
         const data = await response.json();
-        
+
         if (response.ok) {
-            Swal.fire({
-                title: 'Authenticated!',
-                text: `Access tokens verified for ${data.user_id}.`,
-                icon: 'success',
-                confirmButtonColor: '#0284c7',
-                background: '#1e293b',
-                color: '#fff'
-            }).then(() => {
-                // 🌟 HIGH PRECISION REDIRECT MATRIX CONTROL ROUTING
-                if (data.role === 'admin') {
-                    // Admin UI alert dashboard override layout
-                    Swal.fire({
-                        title: 'Admin Session Instantiated',
-                        html: `<div style="text-align: left; font-size: 14px; color: #94a3b8;">
-                                <strong>Status:</strong> Cloud Edge Deployment Active<br>
-                                <strong>Engine:</strong> Persistent In-Memory Node Cache<br>
-                                <strong>Capabilities:</strong> Registration Routes and AI Assist Tunnel Live.
-                               </div>`,
-                        icon: 'info',
-                        confirmButtonText: 'Enter Analytics Grid',
-                        confirmButtonColor: '#38bdf8',
-                        background: '#0f172a',
-                        color: '#fff'
-                    });
-                } else if (data.role === 'student') {
-                    window.location.href = '/api/dashboard/student';
-                } else if (data.role === 'faculty') {
-                    window.location.href = '/api/dashboard/faculty';
-                }
+            Swal.fire('Identity Verified!', 'Access keys matched.', 'success').then(() => {
+                document.getElementById('loginPortal').style.display = 'none';
+                document.getElementById('systemDashboard').style.display = 'block';
+                document.getElementById('dashTitle').innerText = `EduSphere System | Node: ${data.role.toUpperCase()}`;
+                document.getElementById('profileData').innerText = `CONNECTED ID: ${data.user_id}\nROUTING ASSIGNMENT: ${data.role.toUpperCase()}\nSTATUS: Active & Verified Cloud Account Created\nDATABASE LAYER: High Availability In-Memory Storage Online`;
             });
         } else {
-            Swal.fire({
-                title: 'Authentication Denied',
-                text: data.message || 'Identity validation failure.',
-                icon: 'error',
-                confirmButtonColor: '#ef4444',
-                background: '#1e293b',
-                color: '#fff'
-            });
+            Swal.fire('Access Denied', data.message, 'error');
         }
     } catch (err) {
-        Swal.fire({
-            title: 'Network Intercept Exception',
-            text: 'Could not resolve transaction payload with backend server loops.',
-            icon: 'warning',
-            confirmButtonColor: '#f59e0b',
-            background: '#1e293b',
-            color: '#fff'
+        Swal.fire('Network Link Error', 'Could not communicate with cluster backend loops.', 'warning');
+    }
+});
+
+// AI ENGINE INTEGRATION CONSOLE LAYER
+document.getElementById('sendAiBtn').addEventListener('click', async () => {
+    const prompt = document.getElementById('aiPrompt').value.trim();
+    if(!prompt) return;
+    
+    const outBox = document.getElementById('aiResponse');
+    outBox.innerText = "Query routing across generative channels...";
+    
+    try {
+        const response = await fetch('/api/ai-assistant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt })
         });
-    } finally {
-        // Reset interactive input component vectors
-        submitBtn.innerText = "Initialize Authentication";
-        submitBtn.style.opacity = "1";
-        submitBtn.disabled = false;
+        const data = await response.json();
+        outBox.innerText = data.response;
+    } catch(err) {
+        outBox.innerText = "Error: Could not link up with AI model pipelines.";
     }
 });
 </script>
