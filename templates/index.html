@@ -1,73 +1,76 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduSphere | Unified Enterprise Node</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>EduSphere Core | Enterprise Portal</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); width: 350px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
+        h2 { text-align: center; margin-bottom: 24px; color: #38bdf8; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #94a3b8; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #0284c7; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #0369a1; }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">EduSphere</div>
-        <nav style="display: flex; gap: 1rem; align-items: center;">
-            <button id="theme-toggle" class="btn-secondary">🌓 Mode Toggle</button>
-            <button id="logout-btn" class="btn-danger" style="display:none;">Disconnect Session</button>
-        </nav>
-    </header>
+<div class="login-card">
+    <h2>EduSphere Login</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Select Matrix System Role</label>
+            <select id="role" required>
+                <option value="student">Student Portal Access</option>
+                <option value="faculty">Faculty Management Node</option>
+                <option value="admin">System Administration Core</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Identity Username / ID</label>
+            <input type="text" id="username" placeholder="Enter alphanumeric identifier..." required>
+        </div>
+        <div class="form-group">
+            <label>Security Keyphrase (Password)</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit">Initialize Authentication</button>
+    </form>
+</div>
 
-    <main class="container">
-        <section id="auth-section" class="card">
-            <div class="auth-tabs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                <span id="tab-login" class="auth-tab active" style="font-weight: 700; cursor: pointer; color: var(--primary);">🔐 Session Login</span>
-                <span id="tab-register" class="auth-tab" style="font-weight: 700; cursor: pointer; color: var(--text-muted);">📝 Create Account</span>
-            </div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const role = document.getElementById('role').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-            <form id="login-form">
-                <input type="text" id="username" placeholder="User Identifier Token Account Profile" required>
-                <input type="password" id="password" placeholder="Passphrase Matrix Key" required>
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Authenticate Console</button>
-            </form>
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role, username, password })
+        });
 
-            <form id="register-form" style="display: none;">
-                <input type="text" id="reg-username" placeholder="Choose Unique Username (e.g. STU105)" required>
-                <input type="password" id="reg-password" placeholder="Create Strong Security Password" required>
-                
-                <select id="reg-role" style="width: 100%; padding: 0.85rem 1.2rem; margin-bottom: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); outline: none; cursor: pointer;">
-                    <option value="student">👨‍🎓 Student Account</option>
-                    <option value="faculty">👩‍🏫 Faculty Account</option>
-                </select>
-                
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.5rem;">Register New Credentials</button>
-            </form>
-
-            <p id="auth-status-msg" style="margin-top: 1rem; text-align: center; font-weight: 500;"></p>
-        </section>
-
-        <section id="dashboard-section" class="card" style="display: none;"></section>
-
-        <section id="materials-section" class="card">
-            <h2>📚 Enterprise Resource Repositories</h2>
-            <ul id="materials-list" style="margin-top: 1rem; padding-left: 0.5rem;">
-                <li><a href="/static/materials/la_notes.txt" download target="_blank">📄 Linear Algebra & Calculus Complete Notes (LA & C)</a></li>
-                <li><a href="/static/materials/ds_notes.txt" download target="_blank">📄 Data Structures Operations Framework Documentation</a></li>
-                <li><a href="/static/materials/sys_notes.txt" download target="_blank">📄 Core Systems Architecture Reference Blueprint</a></li>
-            </ul>
-        </section>
-
-        <section id="ai-section" class="card">
-            <h2>🤖 Dynamic Predictive AI Cluster Core</h2>
-            <div id="chat-box" class="chat-window">
-                <div class="chat-msg ai">Greetings! I am the campus engine execution model tracking context. Query me regarding computational mechanics or instruction data frames like <em>"search la and c pdf"</em>.</div>
-            </div>
-            <div class="chat-input-container">
-                <input type="text" id="ai-query" placeholder="Submit instructional query parameters to operational core...">
-                <button id="send-ai-btn" class="btn-primary">Query Core</button>
-            </div>
-        </section>
-    </main>
-
-    <script src="/static/js/app.js"></script>
+        const data = await response.json();
+        
+        if (response.ok) {
+            Swal.fire('Authenticated!', `Access granted to cluster dashboard.`, 'success').then(() => {
+                // If admin, show admin metrics alert box, else load dashboard panels
+                Swal.fire('System Verified', `Active Session Profile established as: ${data.role.toUpperCase()}`, 'info');
+            });
+        } else {
+            Swal.fire('Authentication Failure', data.message, 'error');
+        }
+    } catch (err) {
+        Swal.fire('Network Intercept Error', 'Could not establish connection link to Flask server endpoints.', 'error');
+    }
+});
+</script>
 </body>
 </html>
