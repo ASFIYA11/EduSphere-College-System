@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* 🎨 ORIGINAL DEEP BLUE GLASSMORPHIC THEME COLORS FROM YESTERDAY */
         body {
             background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
             color: #e2e8f0;
@@ -63,18 +62,19 @@
         }
         button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(6, 182, 212, 0.4); }
 
-        /* 📊 METRICS & PROGRESS TRACK BARS */
         .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; margin-top: 30px; }
         .metric-widget { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 18px; text-align: center; }
         .metric-num { font-size: 42px; font-weight: 700; color: #06b6d4; margin: 10px 0; text-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
 
-        /* 💬 ORIGINAL INTERACTIVE CHAT ENGINE */
         .chat-frame { background: rgba(15, 23, 42, 0.4); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); margin-top: 35px; display: flex; flex-direction: column; height: 380px; }
         .chat-logs { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
         .bubble { max-width: 75%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
         .bubble-user { background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
         .bubble-ai { background: rgba(255, 255, 255, 0.06); color: #e2e8f0; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid rgba(255,255,255,0.05); }
         .chat-inputs { display: flex; gap: 12px; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+        
+        .download-btn { background: #10b981; margin-top: 15px; width: auto; padding: 10px 20px; font-size: 13px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+        .download-btn:hover { background: #059669; }
     </style>
 </head>
 <body>
@@ -92,7 +92,7 @@
         </div>
         <div class="form-group">
             <label>User Alphanumeric ID</label>
-            <input type="text" id="username" placeholder="Enter custom credentials or admin..." required>
+            <input type="text" id="username" placeholder="Enter identifier to login/register..." required>
         </div>
         <div class="form-group">
             <label>Security Access Token</label>
@@ -111,20 +111,22 @@
     <div class="metrics-row" id="metricsDisplay"></div>
 
     <div style="margin-top: 35px; background: rgba(30,41,59,0.2); padding: 25px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05);">
-        <h3>📚 Shared Courseware Library Assets</h3>
+        <h3>📚 Digital Academic Resources Archive</h3>
         <p style="color: #94a3b8; font-size: 14px; margin: 0; line-height: 1.5;">
-            • Core Workspace Reference maps active at `/static/materials/ds_notes.txt`. <br>
-            • Query the interactive professor agent down below for **"explain bubble sort"** or **"ds notes"** to trigger live processing context blocks.
+            The central system directory has mapped the semester notes repository file cleanly. Click below to pull down the offline dataset directly onto your local machine.
         </p>
+        <a href="/static/materials/ds_notes.txt" download="Data_Structures_Notes.txt" style="text-decoration: none;">
+            <button class="download-btn">📥 Download Reference Syllabus Notes</button>
+        </a>
     </div>
 
     <h3 style="margin-top: 40px; margin-bottom: -15px;">🤖 Campus Cognitive Assistant</h3>
     <div class="chat-frame">
         <div class="chat-logs" id="chatWindow">
-            <div class="bubble bubble-ai">Session handshake established. Type any system analytics query parameters to begin compilation.</div>
+            <div class="bubble bubble-ai">Session handshake established. Type any academic support prompts or algorithm queries below to begin.</div>
         </div>
         <div class="chat-inputs">
-            <input type="text" id="chatInput" placeholder="Ask anything about grades, schedules, or course concepts...">
+            <input type="text" id="chatInput" placeholder="Ask anything about grades, schedules, or core technical concepts...">
             <button id="submitChat" style="width: auto; padding: 0 30px; margin: 0;">Send</button>
         </div>
     </div>
@@ -146,31 +148,32 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
         const data = await res.json();
 
         if (res.ok) {
-            Swal.fire('Authentication Successful', `Access granted to cluster node.`, 'success').then(async () => {
+            Swal.fire('Authentication Successful', `Welcome to the cluster portal view state.`, 'success').then(async () => {
                 document.getElementById('authPortal').style.display = 'none';
                 document.getElementById('masterDashboard').style.display = 'block';
-                document.getElementById('dashHeader').innerText = `EduSphere | Operational Mode: ${data.role.toUpperCase()}`;
+                document.getElementById('dashHeader').innerText = `EduSphere | Welcome, ${data.user_id.toUpperCase()} (${data.role.toUpperCase()})`;
                 
                 const dataRes = await fetch('/api/dashboard/data');
                 const telemetry = await dataRes.json();
                 const grid = document.getElementById('metricsDisplay');
                 grid.innerHTML = '';
                 
+                // 🌟 HIGH PRECISION ROLE-BASED INTERFACE SEGREGATION
                 if (telemetry.role === 'student') {
                     grid.innerHTML = `
-                        <div class="metric-widget"><h3>Attendance Metric</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #4ade80; font-size:13px; margin:0;">Target Threshold Secured</p></div>
-                        <div class="metric-widget"><h3>Pending Backlogs</h3><div class="metric-num">${telemetry.profile.backlogs}</div><p style="color: #94a3b8; font-size:13px; margin:0;">Records Stable</p></div>
-                        <div class="metric-widget"><h3>Calculated Grade</h3><div class="metric-num">A+</div><p style="color: #06b6d4; font-size:13px; margin:0;">Top Tier Percentile</p></div>
+                        <div class="metric-widget"><h3>Attendance Metric</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #4ade80; font-size:13px; margin:0;">Target Threshold Cleared</p></div>
+                        <div class="metric-widget"><h3>Pending Backlogs</h3><div class="metric-num">${telemetry.profile.backlogs}</div><p style="color: #94a3b8; font-size:13px; margin:0;">Academic Record Clean</p></div>
+                        <div class="metric-widget"><h3>Calculated Terminal Grade</h3><div class="metric-num">A+</div><p style="color: #06b6d4; font-size:13px; margin:0;">Top Percentile Ranking</p></div>
                     `;
                 } else if (telemetry.role === 'faculty') {
                     grid.innerHTML = `
-                        <div class="metric-widget"><h3>Resource Score</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #06b6d4; font-size:13px; margin:0;">Active Instructor Metrics</p></div>
-                        <div class="metric-widget"><h3>Disbursed Remittance</h3><div class="metric-num">₹${telemetry.profile.salary}</div><p style="color: #4ade80; font-size:13px; margin:0;">Payroll Active</p></div>
+                        <div class="metric-widget"><h3>Resource Performance Score</h3><div class="metric-num">${telemetry.profile.attendance_pct}%</div><p style="color: #06b6d4; font-size:13px; margin:0;">Active Instructor Matrix</p></div>
+                        <div class="metric-widget"><h3>Disbursed Remittance</h3><div class="metric-num">₹${telemetry.profile.salary}</div><p style="color: #4ade80; font-size:13px; margin:0;">Monthly Payroll Status: Cleared</p></div>
                     `;
                 } else if (telemetry.role === 'admin') {
                     grid.innerHTML = `
-                        <div class="metric-widget"><h3>Active Cloud Profiles</h3><div class="metric-num">${telemetry.metrics.total_users}</div><p style="color: #4ade80; font-size:13px; margin:0;">Live Global Logins Tracked</p></div>
-                        <div class="metric-widget"><h3>Database Status</h3><div class="metric-num" style="font-size:24px; margin:22px 0;">SQLITE ACTIVE</div><p style="color: #06b6d4; font-size:13px; margin:0;">Zero Latency Cache Engine</p></div>
+                        <div class="metric-widget"><h3>Active Global Profiles</h3><div class="metric-num">${telemetry.metrics.total_users}</div><p style="color: #4ade80; font-size:13px; margin:0;">Live User Signups Tracked</p></div>
+                        <div class="metric-widget"><h3>Enterprise Infrastructure</h3><div class="metric-num" style="font-size:24px; margin:22px 0;">SYSTEM HEALTH: NOMINAL</div><p style="color: #06b6d4; font-size:13px; margin:0;">High Availability Core Engine Running</p></div>
                     `;
                 }
             });
@@ -178,7 +181,7 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
             Swal.fire('Access Denied', data.message, 'error');
         }
     } catch (err) {
-        Swal.fire('Link Intercept Drop', 'Could not fetch database records.', 'warning');
+        Swal.fire('Link Intercept Drop', 'Could not sync connection tokens.', 'warning');
     }
 });
 
