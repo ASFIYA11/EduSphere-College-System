@@ -9,28 +9,28 @@ from google.genai import types
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'edusphere_master_secure_production_matrix_2026')
+app.secret_key = os.getenv('SECRET_KEY', 'edusphere_secure_master_token_2026')
 CORS(app)
 
-# Deploy highly responsive In-Memory Storage Cluster for uninterrupted cloud scaling
-_cloud_db = sqlite3.connect(':memory:', check_same_thread=False)
-_cloud_db.row_factory = sqlite3.Row
+# Persistent In-Memory Storage Core to prevent Render from freezing up
+_db = sqlite3.connect(':memory:', check_same_thread=False)
+_db.row_factory = sqlite3.Row
 
-def init_production_schema():
-    cursor = _cloud_db.cursor()
+def init_original_database():
+    cursor = _db.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, password TEXT, role TEXT)")
     cursor.execute("CREATE TABLE IF NOT EXISTS students (roll_no TEXT PRIMARY KEY, name TEXT, attendance_pct REAL, backlogs INTEGER)")
     cursor.execute("CREATE TABLE IF NOT EXISTS student_marks (id INTEGER PRIMARY KEY AUTOINCREMENT, roll_no TEXT, subject_name TEXT, marks_obtained INTEGER)")
     cursor.execute("CREATE TABLE IF NOT EXISTS faculty (faculty_id TEXT PRIMARY KEY, name TEXT, salary REAL, attendance_pct REAL)")
     cursor.execute("CREATE TABLE IF NOT EXISTS timetable (id INTEGER PRIMARY KEY AUTOINCREMENT, faculty_id TEXT, subject_name TEXT, class_time TEXT)")
     
-    # Secure administrative core bypass profile
+    # Core Admin Profile Seeding
     cursor.execute("INSERT OR IGNORE INTO users VALUES ('admin', 'admin123', 'admin')")
-    _cloud_db.commit()
+    _db.commit()
 
-init_production_schema()
+init_original_database()
 
-# Initialize Google GenAI Core Engine Integration
+# Initialize Google GenAI Client
 ai_client = genai.Client(api_key=os.getenv('GEMINI_API_KEY', 'MOCK_KEY'))
 
 @app.route('/')
@@ -39,24 +39,18 @@ def index():
 
 @app.route('/static/favicon.png')
 def dynamic_favicon():
-    """
-    Dynamic Vector Asset Factory Layer.
-    Generates a high-resolution, production-grade glowing enterprise college shield 
-    icon on the fly so the app does not depend on a physical static PNG file on GitHub.
-    """
+    """Generates the glowing cyan college shield tab icon dynamically out of thin air."""
     svg_icon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
         <defs>
-            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#38bdf8" />
-                <stop offset="100%" stop-color="#0284c7" />
+            <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#06b6d4" />
+                <stop offset="100%" stop-color="#3b82f6" />
             </linearGradient>
         </defs>
-        <path d="M64,8 L112,24 L112,64 C112,96 88,116 64,122 C40,116 16,96 16,64 L16,24 Z" fill="url(#skyGrad)" />
-        <path d="M64,16 L100,28 L100,64 C100,90 80,107 64,112 C48,107 28,90 28,64 L28,28 Z" fill="#0f172a" />
-        <polygon points="64,36 92,48 64,60 36,48" fill="#38bdf8" />
-        <polygon points="48,54 48,72 64,80 80,72 80,54 64,62" fill="#38bdf8" />
-        <rect x="90" y="48" width="2" height="20" fill="#38bdf8" />
-        <circle cx="91" cy="68" r="3" fill="#38bdf8" />
+        <path d="M64,8 L112,24 L112,64 C112,96 88,116 64,122 C40,116 16,96 16,64 L16,24 Z" fill="url(#shieldGrad)" />
+        <path d="M64,16 L100,28 L100,64 C100,90 80,107 64,112 C48,107 28,90 28,64 L28,28 Z" fill="#0b1329" />
+        <polygon points="64,36 92,48 64,60 36,48" fill="#06b6d4" />
+        <polygon points="48,54 48,72 64,80 80,72 80,54 64,62" fill="#06b6d4" />
     </svg>"""
     return Response(svg_icon, mimetype='image/svg+xml')
 
@@ -68,23 +62,23 @@ def api_login():
     selected_role = data.get('role', '').strip().lower()
     
     if not username or not password:
-        return jsonify({"status": "error", "message": "Missing security identity credentials."}), 400
+        return jsonify({"status": "error", "message": "Missing credentials."}), 400
 
-    cursor = _cloud_db.cursor()
+    cursor = _db.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id = ?", (username,))
     user = cursor.fetchone()
     
-    # 🌟 OPEN ACCESS GLOBAL MODE: Instantly register any external connection profile dynamically
+    # 🌟 OPEN ACCESS REGISTRATION INTERCEPTOR
     if not user:
         cursor.execute("INSERT INTO users VALUES (?, ?, ?)", (username, password, selected_role))
         if selected_role == 'student':
-            cursor.execute("INSERT INTO students VALUES (?, ?, 78.5, 0)", (username, f"{username.capitalize()} (Student Profile)"))
-            cursor.execute("INSERT INTO student_marks (roll_no, subject_name, marks_obtained) VALUES (?, 'Data Structures & Algorithms', 88)", (username,))
-            cursor.execute("INSERT INTO student_marks (roll_no, subject_name, marks_obtained) VALUES (?, 'Database Management Systems', 92)", (username,))
+            cursor.execute("INSERT INTO students VALUES (?, ?, 84.5, 0)", (username, f"{username.capitalize()} (Student)"))
+            cursor.execute("INSERT INTO student_marks (roll_no, subject_name, marks_obtained) VALUES (?, 'Data Structures', 85)", (username,))
+            cursor.execute("INSERT INTO student_marks (roll_no, subject_name, marks_obtained) VALUES (?, 'Database Management', 90)", (username,))
         elif selected_role == 'faculty':
-            cursor.execute("INSERT INTO faculty VALUES (?, ?, 85000.0, 96.0)", (username, f"Dr. {username.capitalize()}"))
-            cursor.execute("INSERT INTO timetable (faculty_id, subject_name, class_time) VALUES (?, 'Cloud Computing Core', 'Mon & Wed 10:00 AM')", (username,))
-        _cloud_db.commit()
+            cursor.execute("INSERT INTO faculty VALUES (?, ?, 72000.0, 94.0)", (username, f"Prof. {username.capitalize()}"))
+            cursor.execute("INSERT INTO timetable (faculty_id, subject_name, class_time) VALUES (?, 'Advanced Programming', 'Mon 09:00 AM')", (username,))
+        _db.commit()
         
         cursor.execute("SELECT * FROM users WHERE user_id = ?", (username,))
         user = cursor.fetchone()
@@ -94,16 +88,16 @@ def api_login():
         session['role'] = user['role']
         return jsonify({"status": "success", "role": user['role'], "user_id": user['user_id']})
         
-    return jsonify({"status": "error", "message": "Access keyphrase mismatch."}), 401
+    return jsonify({"status": "error", "message": "Invalid credentials."}), 401
 
 @app.route('/api/dashboard/data')
 def get_dashboard_data():
     if 'user_id' not in session:
-        return jsonify({"error": "Unauthorized session context"}), 403
+        return jsonify({"error": "Unauthorized"}), 403
         
     uid = session['user_id']
     role = session['role']
-    cursor = _cloud_db.cursor()
+    cursor = _db.cursor()
     
     if role == 'student':
         profile = cursor.execute("SELECT * FROM students WHERE roll_no = ?", (uid,)).fetchone()
@@ -125,7 +119,7 @@ def get_dashboard_data():
         total_users = cursor.execute("SELECT COUNT(*) as count FROM users").fetchone()['count']
         return jsonify({
             "role": "admin",
-            "metrics": {"total_connections": total_users, "database_status": "ONLINE (IN-MEMORY CACHE PLATFORM)"}
+            "metrics": {"total_users": total_users, "status": "Active cloud matrix"}
         })
 
 @app.route('/api/ai-assistant', methods=['POST'])
@@ -134,7 +128,7 @@ def ai_assistant():
     user_prompt = data.get('prompt', '').strip()
     
     if not user_prompt:
-        return jsonify({"response": "System telemetry listening... Type a query parameter string."})
+        return jsonify({"response": "Standing by..."})
 
     if os.getenv('GEMINI_API_KEY') and os.getenv('GEMINI_API_KEY') != 'MOCK_KEY':
         try:
@@ -142,15 +136,15 @@ def ai_assistant():
                 model='gemini-2.5-flash',
                 contents=user_prompt,
                 config=types.GenerateContentConfig(
-                    system_instruction="You are a brilliant, hyper-interactive AI platform assistant built directly into the EduSphere Enterprise System dashboard. Provide clear answers utilizing structural markdown headers and bullet points.",
-                    temperature=0.4
+                    system_instruction="You are a brilliant university computer science professor. Answer accurately using markdown formatting.",
+                    temperature=0.3
                 )
             )
             return jsonify({"response": response.text})
-        except Exception as err:
-            print(f"AI Stream Intercept Exception: {err}")
+        except Exception as e:
+            print(f"AI Error: {e}")
 
-    return jsonify({"response": f"📡 **EduSphere Edge Sync Echo Activated:** The AI engine received your query: '{user_prompt}'."})
+    return jsonify({"response": f"🤖 **Local Framework Echo:** Received '{user_prompt}' successfully."})
 
 @app.route('/logout')
 def logout():
